@@ -218,3 +218,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific additions
+.env
+k8s/secret.yaml
+*.tfstate
+*.tfstate.*
+.terraform/
