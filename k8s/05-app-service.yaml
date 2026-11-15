@@ -1,0 +1,18 @@
+# ==============================================================================
+# EXTERNAL ACCESS SERVICE (LOADBALANCER)
+# Exposes the CTRM Trade Ingest API directly on localhost:8080 via Docker Desktop.
+# ==============================================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: ctrm-api-service
+  labels:
+    app: ctrm-trade-ingest
+spec:
+  type: LoadBalancer
+  selector:
+    app: ctrm-trade-ingest
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8000

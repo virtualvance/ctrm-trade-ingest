@@ -1,0 +1,18 @@
+# ==============================================================================
+# PERSISTENT VOLUME CLAIM (PVC) FOR POSTGRESQL
+# Guarantees trade audit records persist across container/pod lifecycles.
+# ==============================================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data-pvc
+  labels:
+    app: postgres-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  # Matches the default provisioner verified via `kubectl get storageclass`
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi

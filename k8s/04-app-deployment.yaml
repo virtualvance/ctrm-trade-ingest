@@ -1,0 +1,80 @@
+# ==============================================================================
+# CTRM TRADE INGEST API DEPLOYMENT (HIGH AVAILABILITY & ZERO-TRUST HARDENED)
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ctrm-trade-ingest
+  labels:
+    app: ctrm-trade-ingest
+spec:
+  # Run 2 replicas for high availability and zero-downtime rolling updates
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ctrm-trade-ingest
+  template:
+    metadata:
+      labels:
+        app: ctrm-trade-ingest
+    spec:
+      # Enforce non-root execution at the Kubernetes Pod security layer
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+
+      # ------------------------------------------------------------------------
+      # INIT CONTAINER: DATASTORE READINESS GATE
+      # Blocks the FastAPI container from booting until PostgreSQL is accepting
+      # connections, eliminating cold-start schema initialization race conditions.
+      # ------------------------------------------------------------------------
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:15-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h postgres-service -p 5432 -U postgres; do
+                echo "Waiting for PostgreSQL at postgres-service:5432..."
+                sleep 2
+              done
+              echo "PostgreSQL is ready. Proceeding to start API container."
+
+      containers:
+        - name: api
+          # Pull verified image published by GitHub Actions CI/CD pipeline
+          image: ghcr.io/virtualvance/ctrm-trade-ingest:v1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          # Inject non-sensitive config and sensitive secrets as environment variables
+          envFrom:
+            - configMapRef:
+                name: ctrm-app-config
+            - secretRef:
+                name: ctrm-db-secret
+          # Prevent noisy-neighbor CPU/memory starvation on cluster nodes
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          # Liveness probe restarts container if the Python event loop deadlocks
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          # Readiness probe removes Pod from Service load-balancing if DB drops
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
