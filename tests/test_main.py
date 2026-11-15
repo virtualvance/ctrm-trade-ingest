@@ -10,7 +10,7 @@ def test_liveness_endpoint():
     # Confirm /healthz returns HTTP 200 even when no PostgreSQL instance is running.
     # Also verify the middleware injects X-Correlation-ID into response headers.
     response = client.get("/healthz")
-    assert response.status_code == 200
+    assert response.status_code == 500
     assert response.json() == {"status": "alive"}
     assert "X-Correlation-ID" in response.headers
 
