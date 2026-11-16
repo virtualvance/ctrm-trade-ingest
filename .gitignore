@@ -225,3 +225,6 @@ k8s/secret.yaml
 *.tfstate
 *.tfstate.*
 .terraform/
+
+# Local Kubernetes secrets (never commit real credentials)
+k8s/*secret*.local.yaml
