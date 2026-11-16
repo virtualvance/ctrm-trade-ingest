@@ -87,17 +87,18 @@ The **CTRM Trade Ingest & Audit Service** is a containerized, cloud-native micro
 
 | Artifact | Description |
 | :--- | :--- |
-| [`evidence/01-local-health.png`](./evidence/01-local-health.png) | Local virtual environment health check and unit test verification |
-| [`evidence/02-docker-build.png`](./evidence/02-docker-build.png) | Multi-stage Docker image build (`ctrm-trade-ingest`) |
-| [`evidence/03-compose-up.png`](./evidence/03-compose-up.png) | Local Docker Compose multi-container stack startup |
-| [`evidence/04-api-crud-test.png`](./evidence/04-api-crud-test.png) | Local `POST /trades` and `GET /trades` persistence verification |
-| [`evidence/05-trivy-local.png`](./evidence/05-trivy-local.png) | Local Trivy container vulnerability scan (`0 CRITICAL/HIGH`) |
-| [`evidence/06-ci-fail-gate.png`](./evidence/06-ci-fail-gate.png) | GitHub Actions pipeline blocking a failing Pytest assertion |
-| [`evidence/07-ci-pass-pipeline.png`](./evidence/07-ci-pass-pipeline.png) | Green GitHub Actions CI/CD workflow (Lint, Test, Trivy, GHCR Push) |
-| [`evidence/08-ghcr-package.png`](./evidence/08-ghcr-package.png) | Published immutable container image in GitHub Container Registry |
+| [`evidence/01-local-app.png`](./evidence/01-local-app.png) | Local FastAPI service health check and endpoint verification |
+| [`evidence/01-local-app-b.png`](./evidence/01-local-app-b.png) | Local `POST /trades` and `GET /trades` persistence verification |
+| [`evidence/02-tests-pass.png`](./evidence/02-tests-pass.png) | Automated Pytest unit and API validation test suite passing |
+| [`evidence/03-image-build.png`](./evidence/03-image-build.png) | Multi-stage Docker image build (`ctrm-trade-ingest`) |
+| [`evidence/04-nonroot.png`](./evidence/04-nonroot.png) | Container runtime security verification (`appuser`, UID `10001`) |
+| [`evidence/05-ci-pass.png`](./evidence/05-ci-pass.png) | Green GitHub Actions CI/CD workflow (Lint, Test, Trivy, GHCR Push) |
+| [`evidence/06-ci-fail-gate.png`](./evidence/06-ci-fail-gate.png) | GitHub Actions pipeline blocking an intentionally failing Pytest assertion |
+| [`evidence/07-security-scan.png`](./evidence/07-security-scan.png) | Trivy container vulnerability scan (`0 CRITICAL/HIGH` CVEs) |
+| [`evidence/08-registry-image.png`](./evidence/08-registry-image.png) | Published immutable container image in GitHub Container Registry |
 | [`evidence/09-cluster-ready.png`](./evidence/09-cluster-ready.png) | Docker Desktop Kubernetes (`v1.36.1`) node and `standard` StorageClass ready |
 | [`evidence/10-k8s-deploy.png`](./evidence/10-k8s-deploy.png) | Active Kubernetes Deployments, Pods, Services, and Bound PVC |
-| [`evidence/11-k8s-app-access.png`](./evidence/11-k8s-app-access.png) | Swagger UI (`http://localhost:8080/docs`) querying persisted trade `NG-JAN27-2001` |
+| [`evidence/11 k8s app access.png`](./evidence/11%20k8s%20app%20access.png) | Swagger UI (`http://localhost:8080/docs`) querying persisted trade `NG-JAN27-2001` |
 | [`evidence/12-k8s-logs.png`](./evidence/12-k8s-logs.png) | Structured JSON `trade_ingested` audit log with `correlation_id` from Kubernetes pod |
 | [`evidence/13-k8s-selfheal.png`](./evidence/13-k8s-selfheal.png) | ReplicaSet self-healing after deleting both `ctrm-trade-ingest` pods |
 | [`evidence/14-k8s-db-recovery.png`](./evidence/14-k8s-db-recovery.png) | Automated `postgres-db` pod recovery after forced deletion |
